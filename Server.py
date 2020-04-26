@@ -35,7 +35,7 @@ def submitform():
     return render_template('Submitform.html')
 
 def storingdata(data):
-    with open("F:/WebDevelopment/venv/database.csv",newline='', mode='a') as database2:
+    with open("/home/MohithSai/My-Portfolio/database.csv",newline='', mode='a') as database2:
         name=data['name']
         email=data['email']
         subject=data['subject']
