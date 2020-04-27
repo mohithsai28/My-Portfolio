@@ -44,4 +44,17 @@ def storingdata(data):
         csv_writer=csv.writer(database2,delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
         print(csv_writer)
         csv_writer.writerow([name,email,subject,message])
+        msg = EmailMessage()
+        msg.set_content(html.substitute(name=name), 'html')
+        msg['Subject'] = f'Hi {name},Thanks for contacting me.'
+        msg['From'] = "mohithsai77@gmail.com"
+        msg['To'] = f'{email}'
+
+        s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+        s.ehlo()
+        s.starttls()
+        s.login('mohithsai77@gmail.com', password)
+        s.send_message(msg)
+        s.quit()
+        print("Done Sending Mail")
 
