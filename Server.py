@@ -1,5 +1,9 @@
 from flask import Flask, render_template,url_for,request,redirect
 import csv
+from string import Template
+from pathlib import Path
+import smtplib
+from email.message import EmailMessage
 app = Flask(__name__)
 
 # @app.route('/login', methods=['POST', 'GET'])
@@ -35,6 +39,22 @@ def submitform():
     return render_template('Submitform.html')
 
 def storingdata(data):
+    name=data['name']
+    email=data['email']
+    #password = str(Path("/home/MohithSai/My-Portfolio/MyPassword.txt").read_text())
+    html = Template(Path("/home/MohithSai/My-Portfolio/mail.html").read_text())
+    msg = EmailMessage()
+    msg.set_content(html.substitute(name=name),'html')
+    msg['Subject'] = f'Hi {name},Thanks for contacting me.'
+    msg['From'] = "mohithsai77@gmail.com"
+    msg['To'] = f'{email}'
+
+    s = smtplib.SMTP(host='smtp.gmail.com', port=587)
+    s.ehlo()
+    s.starttls()
+    s.login('mohithsai77@gmail.com','Msdhoni@28')
+    s.send_message(msg)
+    s.quit()
     with open("/home/MohithSai/My-Portfolio/database.csv",newline='', mode='a') as database2:
         name=data['name']
         email=data['email']
@@ -44,17 +64,6 @@ def storingdata(data):
         csv_writer=csv.writer(database2,delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
         print(csv_writer)
         csv_writer.writerow([name,email,subject,message])
-        msg = EmailMessage()
-        msg.set_content(html.substitute(name=name), 'html')
-        msg['Subject'] = f'Hi {name},Thanks for contacting me.'
-        msg['From'] = "mohithsai77@gmail.com"
-        msg['To'] = f'{email}'
 
-        s = smtplib.SMTP(host='smtp.gmail.com', port=587)
-        s.ehlo()
-        s.starttls()
-        s.login('mohithsai77@gmail.com', password)
-        s.send_message(msg)
-        s.quit()
-        print("Done Sending Mail")
+    #print("Done Sending Mail")
 
